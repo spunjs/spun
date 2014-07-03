@@ -62,7 +62,6 @@ describe('parse phase', function(){
       });
     });
   });
-
 });
 
 function toAbsolutePath(base){
