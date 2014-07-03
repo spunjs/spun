@@ -65,25 +65,50 @@ describe('parse phase', function(){
 
 describe('compile phase', function(){
   var compile = require('../lib/compile');
-  var argv = {};
-  var provider = {
-    get: function(context){
-    }
-  };
+  var argv;
+  var provider;
+
+  beforeEach(function(){
+    argv = {};
+    provider = {
+      get: function(context){},
+      program: function(lines, spec, specContext, compilerContext, argv){
+        specContext.toString = function(){};
+      }
+    };
+  });
 
   describe('compiling', function(){
     it('should fail if provider has no "program" strategy', function(done){
-      compile(argv, {})([], function(err){
+      delete provider.program;
+      compile(argv, provider)([], function(err){
         err.should.be.an.instanceOf(errors.compiling.MissingStrategyError);
         done();
       });
     });
 
-    xit('should fail if provider has no strategy for a command', function(done){
+    it('should fail if provider.program does not provide specContext.toString', function(done){
       var specs = [{command: 'foo'}];
-      var provider = {program: function(){}};
+      provider.program = function(){};
+      compile(argv, provider)(specs, function(err){
+        err.should.be.an.instanceOf(errors.compiling.ProgramStrategyError);
+        done();
+      });
+    });
+
+    it('should fail if provider has no strategy for a command', function(done){
+      var specs = [{lines:[{command: 'foo'}]}];
       compile(argv, provider)(specs, function(err){
         err.should.be.an.instanceOf(errors.compiling.MissingStrategyError);
+        done();
+      });
+    });
+
+    it('should fail if a provider strategy fails to remove a line', function(done){
+      var specs = [{lines:[{command: 'foo'}]}];
+      provider.foo = function(){};
+      compile(argv, provider)(specs, function(err){
+        err.should.be.an.instanceOf(errors.compiling.StrategyError);
         done();
       });
     });
