@@ -8,18 +8,18 @@ var resolve = path.resolve;
 var basename = path.basename;
 var dirname = path.dirname;
 
-describe('run', function(){
-  var run = require('../lib/run');
+describe('parse phase', function(){
+  var parse = require('../lib/parse');
   var argv = {workerCount: 5};
   var strategyProvider = {};
 
-  describe('during parsing', function(){
+  describe('parsing', function(){
     glob
     .sync('./acceptance/parsing/passing/*.spun', {cwd: __dirname})
     .map(toAbsolutePath(__dirname))
     .forEach(function(test){
       it('should allow ' + basename(test.relative, '.spun'), function(done){
-        run(argv, [test.absolute], strategyProvider, function(err){
+        parse(argv, [test.absolute])(function(err){
           if(err){
             console.log(err.message);
           }
@@ -37,7 +37,7 @@ describe('run', function(){
       var error = require(errorPath);
 
       it('should not allow ' + basename(test.relative, '.spun'), function(done){
-        run(argv, [absoluePath], strategyProvider, function(err){
+        parse(argv, [absoluePath])(function(err){
           if(!err)return done(new Error('Expected to see an error!'));
           err.should.be.an.instanceOf(error);
           done();
@@ -46,7 +46,7 @@ describe('run', function(){
     });
   });
 
-  describe('during validating', function(){
+  describe('validating', function(){
     glob
     .sync('./acceptance/validating/failing/*.spun', {cwd: __dirname})
     .map(toAbsolutePath(__dirname))
@@ -54,7 +54,7 @@ describe('run', function(){
       var absoluePath = test.absolute;
 
       it('should not allow ' + basename(test.relative, '.spun'), function(done){
-        run(argv, [absoluePath], strategyProvider, function(err){
+        parse(argv, [absoluePath])(function(err){
           if(!err)return done(new Error('Expected to see an error!'));
           err.should.be.an.instanceOf(errors.validating.ValidationError);
           done();

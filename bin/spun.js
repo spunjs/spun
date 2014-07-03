@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+var async = require('async');
 var argv = require('minimist')(process.argv.slice(2));
 var f = require('util').format;
 var findupSync = require('findup-sync');
@@ -10,7 +11,6 @@ var dirname = path.dirname;
 var resolve = path.resolve;
 var sutil = require('spun-util');
 var help = require('../lib/help');
-var run = require('../lib/run');
 var MODULE_NAME = 'spun';
 var cli = new sutil.CLI(MODULE_NAME);
 var DEFAULT_GLOB = './test/**/*.' + MODULE_NAME;
@@ -141,10 +141,11 @@ function toFullPath(path){
   return resolve(argv.cwd, path);
 }
 
-run(argv, spunFiles, strategyProvider, function(err){
+async.waterfall([
+  require('../lib/parse')(argv, spunFiles)
+], function(err){
   if(err) {
-    cli.error('The following error occurred during run:');
-    throw err;
-  }
-  cli.log('Finished!');
+    cli.error(err.message);
+    cli.log(err.stack);
+  } else cli.log('Finished!');
 });
