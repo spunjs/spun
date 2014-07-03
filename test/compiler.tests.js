@@ -45,6 +45,24 @@ describe('run', function(){
       });
     });
   });
+
+  describe('during validating', function(){
+    glob
+    .sync('./acceptance/validating/failing/*.spun', {cwd: __dirname})
+    .map(toAbsolutePath(__dirname))
+    .forEach(function(test){
+      var absoluePath = test.absolute;
+
+      it('should not allow ' + basename(test.relative, '.spun'), function(done){
+        run(argv, [absoluePath], strategyProvider, function(err){
+          if(!err)return done(new Error('Expected to see an error!'));
+          err.should.be.an.instanceOf(errors.validating.ValidationError);
+          done();
+        });
+      });
+    });
+  });
+
 });
 
 function toAbsolutePath(base){
