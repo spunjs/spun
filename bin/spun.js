@@ -142,7 +142,8 @@ function toFullPath(path){
 }
 
 async.waterfall([
-  require('../lib/parse')(argv, spunFiles)
+  require('../lib/parse')(argv, spunFiles),
+  require('../lib/compile')(argv, strategyProvider)
 ], function(err){
   if(err) {
     cli.error(err.message);

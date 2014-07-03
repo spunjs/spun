@@ -11,7 +11,6 @@ var dirname = path.dirname;
 describe('parse phase', function(){
   var parse = require('../lib/parse');
   var argv = {workerCount: 5};
-  var strategyProvider = {};
 
   describe('parsing', function(){
     glob
@@ -58,6 +57,52 @@ describe('parse phase', function(){
           if(!err)return done(new Error('Expected to see an error!'));
           err.should.be.an.instanceOf(errors.validating.ValidationError);
           done();
+        });
+      });
+    });
+  });
+});
+
+describe('compile phase', function(){
+  var compile = require('../lib/compile');
+  var argv = {};
+  var provider = {
+    get: function(context){
+    }
+  };
+
+  describe('compiling', function(){
+    it('should fail if provider has no "program" strategy', function(done){
+      compile(argv, {})([], function(err){
+        err.should.be.an.instanceOf(errors.compiling.MissingStrategyError);
+        done();
+      });
+    });
+
+    xit('should fail if provider has no strategy for a command', function(done){
+      var specs = [{command: 'foo'}];
+      var provider = {program: function(){}};
+      compile(argv, provider)(specs, function(err){
+        err.should.be.an.instanceOf(errors.compiling.MissingStrategyError);
+        done();
+      });
+    });
+
+    it('should compile sources', function(){
+      glob
+      .sync('./acceptance/compiling/passing/*.spun', {cwd: __dirname})
+      .map(toAbsolutePath(__dirname))
+      .forEach(function(test){
+        var absoluePath = test.absolute;
+        var provider = {};
+
+        it('should compile ' + basename(test.relative, '.spun'), function(done){
+          compile(argv, [absoluePath])(function(err){
+            if(err){
+              console.log(err.message);
+            }
+            done(err);
+          });
         });
       });
     });
