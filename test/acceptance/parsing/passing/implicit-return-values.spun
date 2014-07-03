@@ -1,6 +1,0 @@
-#ignore this
-get "http://google.com"
-
-find "button"
-
-text $$ == "foo"

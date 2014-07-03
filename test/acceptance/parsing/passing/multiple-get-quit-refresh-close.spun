@@ -1,0 +1,12 @@
+get "https://google.com"
+
+quit
+
+get "/news"
+
+close
+
+get "."
+
+refresh
+refresh
