@@ -19,7 +19,12 @@ describe('run', function(){
     .map(toAbsolutePath(__dirname))
     .forEach(function(test){
       it('should allow ' + basename(test.relative, '.spun'), function(done){
-        run(argv, [test.absolute], strategyProvider, done);
+        run(argv, [test.absolute], strategyProvider, function(err){
+          if(err){
+            console.log(err.message);
+          }
+          done(err);
+        });
       });
     });
 
@@ -33,6 +38,7 @@ describe('run', function(){
 
       it('should not allow ' + basename(test.relative, '.spun'), function(done){
         run(argv, [absoluePath], strategyProvider, function(err){
+          if(!err)return done(new Error('Expected to see an error!'));
           err.should.be.an.instanceOf(error);
           done();
         });
