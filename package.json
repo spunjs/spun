@@ -7,7 +7,7 @@
   "scripts": {
     "xpretest": "jshint lib && jshint --config ./test/.jshintrc test",
     "cover": "istanbul cover _mocha && cat ./coverage/lcov.info | coveralls -v && rm -rf coverage",
-    "test": "mocha './test/**/*.tests.js'"
+    "test": "mocha $T './test/**/*.tests.js'"
   },
   "bin": {
     "spun": "./bin/spun.js"
