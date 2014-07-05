@@ -29,16 +29,6 @@ describe('compile', function(){
         done();
       });
     });
-
-    it('should fail if a provider strategy fails to remove a line', function(done){
-      var specs = [{lines:[{command: 'foo'}]}];
-      Provider.prototype.foo = function(){};
-      compile(argv, Provider)(specs, function(err){
-        delete Provider.prototype.foo;
-        err.should.be.an.instanceOf(errors.compiling.StrategyError);
-        done();
-      });
-    });
   });
 
   describe('compiling', function(){

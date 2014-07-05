@@ -7,9 +7,7 @@ var CompositeString = composites.CompositeString;
 module.exports = function(argv){
   var program = new Program();
 
-  this.get = function(lines){
-    var line = lines.splice(0, 1)[0];
-
+  this.get = function(line, previousLines, remainingLines){
     program.push('sample: ' + line.args);
   };
 

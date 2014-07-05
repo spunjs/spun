@@ -19,10 +19,21 @@ var REAL_CWD = process.cwd();
 var providerPackageJson;
 var spunFiles = [];
 var strategyProvider;
+var strategyProviderPath;
+var spunTasks;
 
 process.title = MODULE_NAME;
 
 if(argv.h || argv.help) help(MODULE_NAME), exit(0);
+
+if(argv.browsers)
+  if(!/(?:chrome|ff|ie|opera|phantom|safari)(?:,(?:chrome|ff|ie|opera|phantom|safari))*/.test(argv.browsers))
+    cli.error('--browsers argument only accepts chrome, ff, ie, opera, phantom, or safari.')
+    , exit(1);
+  else argv.browsers = argv.browsers.split(',');
+else
+  cli.log('No --browsers given, defaulting to chrome.')
+  , argv.browsers = ['chrome'];
 
 if('cwd' in argv){
   argv.cwd = resolve(argv.cwd);
@@ -35,8 +46,9 @@ if('cwd' in argv){
   argv.cwd = REAL_CWD;
 }
 
-if(parseInt(argv.workerCount))
-  cli.log(f('Worker count set to %n.', argv.workerCount));
+argv.workerCount = parseInt(argv['worker-count']);
+if(argv.workerCount)
+  cli.log(f('Worker count set to %s.', argv.workerCount));
 else
   argv.workerCount = DEFAULT_WORKER_COUNT;
 
@@ -44,6 +56,8 @@ if(!strategyProvider && argv.p)
   argv.p = resolve(argv.cwd, argv.p)
   , cli.log(f('Attempting to find a strategy provider starting at %s', argv.p))
   , strategyProvider = getProviderByArg('p', argv);
+
+if(strategyProvider)argv.provider = argv.p;
 
 if(!strategyProvider && argv.provider)
   argv.provider = resolve(argv.cwd, argv.provider)
@@ -55,7 +69,13 @@ if(!strategyProvider)
 
 if(!strategyProvider && providerPackageJson)
   cli.log(f('Attempting to find a strategy provider in package.json located at %s', providerPackageJson))
-  , strategyProvider = getProviderInPackageJson(providerPackageJson);
+  , strategyProviderPath = getProviderPathFromPackageJson(providerPackageJson);
+
+if(strategyProviderPath)
+  cli.log(f('Attempting to load provider at %s', strategyProviderPath))
+  , strategyProvider = require(strategyProviderPath);
+
+if(strategyProvider)argv.provider = strategyProviderPath;
 
 if(!strategyProvider)
   cli.error('No strategy provider found!')
@@ -88,6 +108,15 @@ if(!spunFiles.length){
   exit(1);
 }
 
+if(argv.runner === 'false' || argv.r === 'false')
+  delete argv.runner
+  , delete argv.r
+  , cli.log('--runner set to false.  Not running compiled spun files.');
+else {
+  if(typeof argv.runner !== 'string' && typeof argv.r === 'string')argv.runner = argv.r;
+  else argv.runner = 'node';
+}
+
 function byExtensions(path){
   return path.indexOf('.' + MODULE_NAME) === path.length - MODULE_NAME.length - 1;
 }
@@ -112,7 +141,7 @@ function getProviderByArg(argName, argv){
   }
 }
 
-function getProviderInPackageJson(providerPackageJson){
+function getProviderPathFromPackageJson(providerPackageJson){
   var json = require(providerPackageJson);
   var dependencies = json.dependencies;
   var devDependencies = json.devDependencies;
@@ -134,9 +163,7 @@ function getProviderInPackageJson(providerPackageJson){
 
   if(providerName)
     cli.log(f('Found %s in %s', providerName, providerPackageJson))
-    , provider = resolve(dirname(providerPackageJson), 'node_modules', providerName)
-    , cli.log(f('Attempting to load it at %s', provider))
-    , provider =  require(provider);
+    , provider = resolve(dirname(providerPackageJson), 'node_modules', providerName);
 
   return provider;
 }
@@ -145,10 +172,14 @@ function toFullPath(path){
   return resolve(argv.cwd, path);
 }
 
-async.waterfall([
+spunTasks = [
   require('../lib/parse')(argv, spunFiles),
   require('../lib/compile')(argv, strategyProvider)
-], function(err){
+];
+
+if(argv.runner)spunTasks.push(require('../lib/run')(argv));
+
+async.waterfall(spunTasks, function(err){
   if(err) {
     cli.error(err.message);
     cli.log(err.stack);

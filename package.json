@@ -28,7 +28,8 @@
     "mocha": "~1.20.1",
     "istanbul": "~0.2.13",
     "jshint": "~2.5.1",
-    "composites": "*"
+    "composites": "*",
+    "spun-webdriver-sync": "0.0.1"
   },
   "dependencies": {
     "glob": "^4.0.2",
