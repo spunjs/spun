@@ -1,1 +1,1 @@
-get result
+sample: "https://google.com"

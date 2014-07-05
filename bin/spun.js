@@ -67,6 +67,10 @@ if(!strategyProvider)
     )
   , exit(1);
 
+if(typeof strategyProvider !== 'function')
+  cli.error('A strategy provider must be instantiable.')
+  , exit(1);
+
 if(argv._.length){
   argv._.forEach(function(pattern){
     spunFiles = spunFiles.concat(glob.sync(pattern, {cwd: argv.cwd}));

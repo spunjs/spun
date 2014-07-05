@@ -28,7 +28,7 @@
     "mocha": "~1.20.1",
     "istanbul": "~0.2.13",
     "jshint": "~2.5.1",
-    "spun-webdriver-sync": "0.0.1"
+    "composites": "*"
   },
   "dependencies": {
     "glob": "^4.0.2",
@@ -38,7 +38,6 @@
     "is-dir": "^1.0.0",
     "async": "^0.9.0",
     "err-handler": "^0.0.0",
-    "composites": "^0.0.3",
     "spun-util": "^0.0.1",
     "dir-to-exports": "^1.0.1",
     "is-file": "~1.0.0"

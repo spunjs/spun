@@ -7,8 +7,9 @@ var path = require('path');
 var resolve = path.resolve;
 var basename = path.basename;
 var dirname = path.dirname;
+var toAbsolutePath = require('./helpers/to-absolute-path');
 
-describe('parse phase', function(){
+describe('parse', function(){
   var parse = require('../lib/parse');
   var argv = {workerCount: 5};
 
@@ -62,84 +63,3 @@ describe('parse phase', function(){
     });
   });
 });
-
-describe('compile phase', function(){
-  var compile = require('../lib/compile');
-  var argv;
-  var provider;
-
-  beforeEach(function(){
-    argv = {};
-    provider = {
-      get: function(context){},
-      program: function(lines, spec, specContext, compilerContext, argv){
-        specContext.toString = function(){};
-      }
-    };
-  });
-
-  describe('compiling', function(){
-    it('should fail if provider has no "program" strategy', function(done){
-      delete provider.program;
-      compile(argv, provider)([], function(err){
-        err.should.be.an.instanceOf(errors.compiling.MissingStrategyError);
-        done();
-      });
-    });
-
-    it('should fail if provider.program does not provide specContext.toString', function(done){
-      var specs = [{command: 'foo'}];
-      provider.program = function(){};
-      compile(argv, provider)(specs, function(err){
-        err.should.be.an.instanceOf(errors.compiling.ProgramStrategyError);
-        done();
-      });
-    });
-
-    it('should fail if provider has no strategy for a command', function(done){
-      var specs = [{lines:[{command: 'foo'}]}];
-      compile(argv, provider)(specs, function(err){
-        err.should.be.an.instanceOf(errors.compiling.MissingStrategyError);
-        done();
-      });
-    });
-
-    it('should fail if a provider strategy fails to remove a line', function(done){
-      var specs = [{lines:[{command: 'foo'}]}];
-      provider.foo = function(){};
-      compile(argv, provider)(specs, function(err){
-        err.should.be.an.instanceOf(errors.compiling.StrategyError);
-        done();
-      });
-    });
-
-    it('should compile sources', function(){
-      glob
-      .sync('./acceptance/compiling/passing/*.spun', {cwd: __dirname})
-      .map(toAbsolutePath(__dirname))
-      .forEach(function(test){
-        var absoluePath = test.absolute;
-        var provider = {};
-
-        it('should compile ' + basename(test.relative, '.spun'), function(done){
-          compile(argv, [absoluePath])(function(err){
-            if(err){
-              console.log(err.message);
-            }
-            done(err);
-          });
-        });
-      });
-    });
-  });
-});
-
-function toAbsolutePath(base){
-  return function(path){
-    return {
-      base: base,
-      relative: path,
-      absolute: resolve(base, path)
-    };
-  };
-}
