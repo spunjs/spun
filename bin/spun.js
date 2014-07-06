@@ -21,13 +21,14 @@ var spunFiles = [];
 var strategyProvider;
 var strategyProviderPath;
 var spunTasks;
+var allowedBrowsers = 'chrome,ff,ie,opera,phantom,afari'.split(',');
 
 process.title = MODULE_NAME;
 
 if(argv.h || argv.help) help(MODULE_NAME), exit(0);
 
 if(argv.browsers)
-  if(!/(?:chrome|ff|ie|opera|phantom|safari)(?:,(?:chrome|ff|ie|opera|phantom|safari))*/.test(argv.browsers))
+  if(argv.browsers.split(',').filter(function(browser){return allowedBrowsers.indexOf(browser) === -1;}).length)
     cli.error('--browsers argument only accepts chrome, ff, ie, opera, phantom, or safari.')
     , exit(1);
   else argv.browsers = argv.browsers.split(',');
