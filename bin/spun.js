@@ -3,6 +3,7 @@
 var async = require('async');
 var argv = require('minimist')(process.argv.slice(2));
 var f = require('util').format;
+var h = require('../lib/helpers');
 var findupSync = require('findup-sync');
 var glob = require('glob');
 var isDir = require('is-dir');
@@ -22,6 +23,7 @@ var strategyProvider;
 var strategyProviderPath;
 var spunTasks;
 var allowedBrowsers = 'chrome,ff,ie,opera,phantom,afari'.split(',');
+var reporter = require('../lib/reporters/spec');
 
 process.title = MODULE_NAME;
 
@@ -182,11 +184,14 @@ spunTasks = [
   require('../lib/compile')(argv, strategyProvider)
 ];
 
-if(argv.runner)spunTasks.push(require('../lib/run')(argv));
+if(argv.runner)spunTasks.push(require('../lib/run')(argv, reporter(cli)));
 
-async.waterfall(spunTasks, function(err){
+async.waterfall(spunTasks, function(err, contexts){
+  var failures = contexts.filter(h.byProp('error')).length;
+  var method = 'praise';
   if(err) {
     cli.error(err.message);
-    cli.log(err.stack);
-  } else cli.log('Finished!');
+  }
+  if(err || failures) method = 'error';
+  cli[method](f('FINISHED!  %s passed 0 failed', contexts.length - failures));
 });

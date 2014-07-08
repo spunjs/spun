@@ -1,3 +1,5 @@
 get "https://github.com"
 
+find "[name=q]"
+
 quit
