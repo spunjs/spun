@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
 var async = require('async');
-var argv = require('minimist')(process.argv.slice(2));
+var argv = require('minimist')(process.argv.slice(2), {
+  boolean: ['verbose']
+});
 var f = require('util').format;
 var h = require('../lib/helpers');
 var findupSync = require('findup-sync');
@@ -28,6 +30,8 @@ var reporter = require('../lib/reporters/spec');
 process.title = MODULE_NAME;
 
 if(argv.h || argv.help) help(MODULE_NAME), exit(0);
+
+if(argv.v) argv.verbose = true;
 
 if(argv.version)
   cli.log(require('../package.json').version)
@@ -184,14 +188,17 @@ spunTasks = [
   require('../lib/compile')(argv, strategyProvider)
 ];
 
-if(argv.runner)spunTasks.push(require('../lib/run')(argv, reporter(cli)));
+if(argv.runner)spunTasks.push(require('../lib/run')(argv, reporter(argv, cli)));
 
 async.waterfall(spunTasks, function(err, contexts){
   var failures = contexts.filter(h.byProp('error')).length;
   var method = 'praise';
   if(err) {
-    cli.error(err.message);
+    //cli.error(err.message);
   }
   if(err || failures) method = 'error';
-  cli[method](f('FINISHED!  %s passed 0 failed', contexts.length - failures));
+
+  cli[method](f('FINISHED!  %s passed %s failed', contexts.length - failures, failures));
+
+  if(method === 'error' && !argv.verbose) cli.error('Run with --verbose to see the full output.');
 });
