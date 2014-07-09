@@ -13,6 +13,7 @@ var read = function(file){return require('fs').readFileSync(file, 'utf-8')+'';};
 describe('compile', function(){
   var parse = require('../lib/parse');
   var compile = require('../lib/compile');
+  var errors = require('../lib/compile/errors');
   var argv;
   var Provider = require('./helpers/sample-provider');
   var provider;
@@ -25,7 +26,7 @@ describe('compile', function(){
     it('should fail if provider has no strategy for a command', function(done){
       var specs = [{lines:[{command: 'foo'}]}];
       compile(argv, Provider)(specs, function(err){
-        err.should.be.an.instanceOf(errors.compiling.MissingStrategyError);
+        err.should.be.an.instanceOf(errors.MissingStrategyError);
         done();
       });
     });
