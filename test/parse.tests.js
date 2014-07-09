@@ -56,7 +56,7 @@ describe('parse', function(){
       it('should not allow ' + basename(test.relative, '.spun'), function(done){
         parse(argv, [absoluePath])(function(err){
           if(!err)return done(new Error('Expected to see an error!'));
-          err.should.be.an.instanceOf(errors.validating.ValidationError);
+          err.should.be.an.instanceOf(errors.ValidationError);
           done();
         });
       });

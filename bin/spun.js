@@ -10,9 +10,11 @@ var findupSync = require('findup-sync');
 var glob = require('glob');
 var isDir = require('is-dir');
 var path = require('path');
+var basename = path.basename;
 var dirname = path.dirname;
 var resolve = path.resolve;
 var sutil = require('spun-util');
+var errors = sutil.errors;
 var help = require('../lib/help');
 var MODULE_NAME = 'spun';
 var cli = new sutil.CLI(MODULE_NAME);
@@ -144,12 +146,17 @@ function exit(code){
 }
 
 function getProviderByArg(argName, argv){
+  var provider;
+  var fullPath = resolve(argv.cwd, argv[argName]);
   try {
-    return require(resolve(argv.cwd, argv[argName]));
+    provider = require(fullPath);
+    cli.log(f('Found %s at %s', basename(fullPath), fullPath));
   } catch(e) {
-    cli.error(f('Unable to location provider using argv.%s = %s', argName, argv[argName]));
+    console.log(e);
+    cli.error(f('Unable to locate provider using argv.%s = %s', argName, argv[argName]));
     cli.error(f('The following error occurred: %j', e));
   }
+  return provider;
 }
 
 function getProviderPathFromPackageJson(providerPackageJson){
@@ -191,10 +198,21 @@ spunTasks = [
 if(argv.runner)spunTasks.push(require('../lib/run')(argv, reporter(argv, cli)));
 
 async.waterfall(spunTasks, function(err, contexts){
+  contexts = contexts || [];
   var failures = contexts.filter(h.byProp('error')).length;
   var method = 'praise';
   if(err) {
-    //cli.error(err.message);
+    if(err instanceof errors.SpunError){
+      cli.error(f('%s: %s', err.constructor.super_.name, err.message));
+      if(err.stack){
+        err.stack.forEach(function(entry){
+          cli.error('|  ' + entry);
+        });
+      }
+    } else {
+      cli.error(err.message);
+      if(err.stack) console.error(err.stack);
+    }
   }
   if(err || failures) method = 'error';
 

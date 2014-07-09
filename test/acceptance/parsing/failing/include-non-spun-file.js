@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = require('spun-util').errors.parsing.InvalidIncludePathError;
+module.exports = require('spun-util').errors.ParseError;

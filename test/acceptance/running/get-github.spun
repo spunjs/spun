@@ -1,5 +1,6 @@
 get "https://github.com"
+get "https://google.com"
+get "https://yahoo.com"
 
-find "[name=q]"
 
 quit

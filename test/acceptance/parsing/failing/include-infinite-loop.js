@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = require('spun-util').errors.parsing.InfiniteIncludeError;
+module.exports = require('spun-util').errors.ParseError;
