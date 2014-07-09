@@ -1,6 +1,7 @@
 'use strict';
 
 var glob = require('glob');
+var should = require('should');
 var sutil = require('spun-util');
 var errors = sutil.errors;
 var path = require('path');
@@ -45,6 +46,97 @@ describe('parse', function(){
         });
       });
     });
+  });
+
+  describe('variable replacement', function(){
+    var replaceVariables = require('../lib/parse/replace-variables');
+
+    [
+      'click',
+      'find',
+      'get'
+    ].forEach(function(command){
+      it('should replace string variables for ' + command, function(done){
+        var variables = {};
+        var lines = [
+          {command: 'set', args: 'foo "asdf"'},
+          {command: command, args: 'foo'}
+        ];
+        var spec = {variables: variables, lines: lines};
+        var specs = [spec];
+
+        replaceVariables(specs, function(err, _specs){
+          _specs.should.equal(specs);
+          variables.foo.should.equal('asdf');
+          lines[1].args.should.equal('"asdf"');
+          done();
+        });
+      });
+    });
+
+    [
+      'sleep'
+    ].forEach(function(command){
+      it('should replace numeric variables for ' + command, function(done){
+        var variables = {};
+        var lines = [
+          {command: 'set', args: 'foo 5'},
+          {command: command, args: 'foo'}
+        ];
+        var spec = {variables: variables, lines: lines};
+        var specs = [spec];
+
+        replaceVariables(specs, function(err, _specs){
+          should(err).be.null;
+          _specs.should.equal(specs);
+          variables.foo.should.equal(5);
+          lines[1].args.should.equal(5);
+          done(err);
+        });
+      });
+    });
+
+    [
+      'click',
+      'find',
+      'get'
+    ].forEach(function(command){
+      it('should not replace numeric variables for ' + command, function(done){
+        var variables = {};
+        var lines = [
+          {command: 'set', args: 'foo 5'},
+          {command: command, args: 'foo'}
+        ];
+        var spec = {variables: variables, lines: lines};
+        var specs = [spec];
+
+        replaceVariables(specs, function(err, _specs){
+          err.should.be.an.instanceOf(errors.ParseError);
+          done();
+        });
+      });
+    });
+
+    [
+      'sleep'
+    ].forEach(function(command){
+      it('should not replace string variables for ' + command, function(done){
+        var variables = {};
+        var lines = [
+          {command: 'set', args: 'foo "asdf"'},
+          {command: command, args: 'foo'}
+        ];
+        var spec = {variables: variables, lines: lines};
+        var specs = [spec];
+
+        replaceVariables(specs, function(err, _specs){
+          err.should.be.an.instanceOf(errors.ParseError);
+          done();
+        });
+      });
+    });
+
+
   });
 
   describe('validating', function(){
