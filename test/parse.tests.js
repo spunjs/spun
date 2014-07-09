@@ -22,6 +22,7 @@ describe('parse', function(){
         parse(argv, [test.absolute])(function(err){
           if(err){
             console.log(err.message);
+            console.log(err.stack);
           }
           done(err);
         });
