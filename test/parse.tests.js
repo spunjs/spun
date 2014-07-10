@@ -145,7 +145,6 @@ describe('parse', function(){
       var specs = [spec];
 
       replaceVariables(specs, function(err, _specs){
-        console.log(err);
         err.should.be.an.instanceOf(errors.ParseError);
         done();
       });
