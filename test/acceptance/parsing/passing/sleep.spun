@@ -1,1 +1,3 @@
 sleep 2345
+
+get "http://google.com"

@@ -1,1 +1,3 @@
 set username "foo"
+
+get "http://google.com"
