@@ -18,6 +18,8 @@ var errors = sutil.errors;
 var help = require('../lib/help');
 var MODULE_NAME = 'spun';
 var cli = new sutil.CLI(MODULE_NAME);
+var DEFAULT_PROVIDER_NAME = 'spun-webdriver-sync';
+var DEFAULT_PROVIDER_PATH = resolve(__dirname, '..', 'node_modules', 'spun-webdriver-sync');
 var DEFAULT_GLOB = './test/**/*.' + MODULE_NAME;
 var DEFAULT_WORKER_COUNT = 10;
 var REAL_CWD = process.cwd();
@@ -83,6 +85,10 @@ if(!provider)
 if(!provider && providerPackageJson)
   cli.log(f('Attempting to find a strategy provider in package.json located at %s', providerPackageJson))
   , providerPath = getProviderPathFromPackageJson(providerPackageJson);
+
+if(!provider)
+  cli.log(f('Using the default provider ', DEFAULT_PROVIDER_NAME))
+  , providerPath = DEFAULT_PROVIDER_PATH;
 
 if(providerPath)
   cli.log(f('Attempting to load provider at %s', providerPath))
