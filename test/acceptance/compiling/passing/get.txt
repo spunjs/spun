@@ -1,1 +1,3 @@
-sample: "https://google.com"
+sample: "https://google.com/"
+sample: "https://google.com/news"
+sample: "https://google.com/food"

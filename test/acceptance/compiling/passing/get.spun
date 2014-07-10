@@ -1,1 +1,5 @@
 get "https://google.com"
+
+get "/news"
+
+get "/food"
