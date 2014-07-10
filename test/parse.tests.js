@@ -35,13 +35,11 @@ describe('parse', function(){
     .map(toAbsolutePath(__dirname))
     .forEach(function(test){
       var absoluePath = test.absolute;
-      var errorPath = resolve(dirname(absoluePath), basename(absoluePath, '.spun') + '.js');
-      var error = require(errorPath);
 
       it('should not allow ' + basename(test.relative, '.spun'), function(done){
         parse(argv, [absoluePath])(function(err){
           if(!err)return done(new Error('Expected to see an error!'));
-          err.should.be.an.instanceOf(error);
+          err.should.be.an.instanceOf(errors.ParseError);
           done();
         });
       });
