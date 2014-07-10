@@ -7,7 +7,7 @@ author a language agnostic selenium specification and run it on any platform.
 
 `spun` relies on `strategy providers` to convert a spun file down to a languge.
 `spun` will search `package.json` for the first dependency prefixed with
-`spun-`.  Because a `strategy provider` is likely to include [spun-util](https://github.com/jsdevel/spun-util.git),
+`spun-`.  Because a `strategy provider` is likely to include [spun-util](https://github.com/spunjs/spun-util.git),
 `spun-util` is ignored in this search.
 
 `spun` also assumes that by default your language compiles down to `node`.  By default
@@ -53,14 +53,14 @@ Still not very cool ;)
 ## Example spun file
 
 ```spun
-case "Signing In"
 get "http://google.com"
-type "username" in "[name=username]"
-type "password" in "[name=password]"
+find "[name=username]"
+type "username"
+find "[name=password]"
+type "password"
 click "#login-button"
-isVisible ".my-secret.profile.selector"
 get "/news"
-isVisible ".avatar-image"
+quit
 ```
 
 <a name="options"/>
@@ -97,8 +97,8 @@ THE SOFTWARE.
 [npm-url]: https://npmjs.org/package/spun
 [npm-image]: http://img.shields.io/npm/v/spun.svg
 
-[travis-url]: https://travis-ci.org/jsdevel/spun
-[travis-image]: http://img.shields.io/travis/jsdevel/spun.svg
+[travis-url]: https://travis-ci.org/spunjs/spun
+[travis-image]: http://img.shields.io/travis/spunjs/spun.svg
 
-[coveralls-url]: https://coveralls.io/r/jsdevel/spun
-[coveralls-image]: http://img.shields.io/coveralls/jsdevel/spun/master.svg
+[coveralls-url]: https://coveralls.io/r/spunjs/spun
+[coveralls-image]: http://img.shields.io/coveralls/spunjs/spun/master.svg
