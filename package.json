@@ -5,7 +5,7 @@
   "author": "Joseph Spencer",
   "preferGlobal": true,
   "scripts": {
-    "xpretest": "jshint lib && jshint --config ./test/.jshintrc test",
+    "pretest": "jshint lib && jshint --config ./test/.jshintrc test",
     "cover": "istanbul cover _mocha && cat ./coverage/lcov.info | coveralls -v && rm -rf coverage",
     "test": "make test"
   },
