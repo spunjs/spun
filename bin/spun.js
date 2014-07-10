@@ -23,8 +23,8 @@ var DEFAULT_WORKER_COUNT = 10;
 var REAL_CWD = process.cwd();
 var providerPackageJson;
 var spunFiles = [];
-var strategyProvider;
-var strategyProviderPath;
+var provider;
+var providerPath;
 var spunTasks;
 var allowedBrowsers = 'chrome,ff,ie,opera,phantom,afari'.split(',');
 var reporter = require('../lib/reporters/spec');
@@ -65,32 +65,32 @@ if(argv.workerCount)
 else
   argv.workerCount = DEFAULT_WORKER_COUNT;
 
-if(!strategyProvider && argv.p)
+if(!provider && argv.p)
   argv.p = resolve(argv.cwd, argv.p)
   , cli.log(f('Attempting to find a strategy provider starting at %s', argv.p))
-  , strategyProvider = getProviderByArg('p', argv);
+  , provider = getProviderByArg('p', argv);
 
-if(strategyProvider)argv.provider = argv.p;
+if(provider)argv.provider = argv.p;
 
-if(!strategyProvider && argv.provider)
+if(!provider && argv.provider)
   argv.provider = resolve(argv.cwd, argv.provider)
   , cli.log(f('Attempting to find a strategy provider starting at %s', argv.provider))
-  , strategyProvider = getProviderByArg('provider', argv);
+  , provider = getProviderByArg('provider', argv);
 
-if(!strategyProvider)
+if(!provider)
   providerPackageJson = findupSync('package.json', {cwd: argv.cwd});
 
-if(!strategyProvider && providerPackageJson)
+if(!provider && providerPackageJson)
   cli.log(f('Attempting to find a strategy provider in package.json located at %s', providerPackageJson))
-  , strategyProviderPath = getProviderPathFromPackageJson(providerPackageJson);
+  , providerPath = getProviderPathFromPackageJson(providerPackageJson);
 
-if(strategyProviderPath)
-  cli.log(f('Attempting to load provider at %s', strategyProviderPath))
-  , strategyProvider = require(strategyProviderPath);
+if(providerPath)
+  cli.log(f('Attempting to load provider at %s', providerPath))
+  , provider = require(providerPath);
 
-if(strategyProvider)argv.provider = strategyProviderPath;
+if(provider)argv.provider = providerPath;
 
-if(!strategyProvider)
+if(!provider)
   cli.error('No strategy provider found!')
   , argv.p && cli.error(f('  -p was %s', argv.p))
   , argv.provider && cli.error(f('  --provider was %s', argv.provider))
@@ -100,7 +100,7 @@ if(!strategyProvider)
     )
   , exit(1);
 
-if(typeof strategyProvider !== 'function')
+if(typeof provider !== 'function')
   cli.error('A strategy provider must be instantiable.')
   , exit(1);
 
@@ -192,7 +192,7 @@ function toFullPath(path){
 
 spunTasks = [
   require('../lib/parse')(argv, spunFiles),
-  require('../lib/compile')(argv, strategyProvider)
+  require('../lib/compile')(argv, provider)
 ];
 
 if(argv.runner)spunTasks.push(require('../lib/run')(argv, reporter(argv, cli)));
