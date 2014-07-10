@@ -136,7 +136,20 @@ describe('parse', function(){
       });
     });
 
+    it('should return an error when referencing an undefined variable', function(done){
+      var variables = {};
+      var lines = [
+        {command: 'sleep', args: 'foo'}
+      ];
+      var spec = {variables: variables, lines: lines};
+      var specs = [spec];
 
+      replaceVariables(specs, function(err, _specs){
+        console.log(err);
+        err.should.be.an.instanceOf(errors.ParseError);
+        done();
+      });
+    });
   });
 
   describe('validating', function(){
