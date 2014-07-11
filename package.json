@@ -1,6 +1,6 @@
 {
   "name": "spun",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Rapid specification authoring for Selenium.",
   "author": "Joseph Spencer",
   "preferGlobal": true,
