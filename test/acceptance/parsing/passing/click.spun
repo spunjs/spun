@@ -1,0 +1,5 @@
+get "http://google.com"
+
+find "asdf"
+
+click
