@@ -1,3 +1,6 @@
 set username "foo"
 
 get "http://google.com"
+
+submit username
+click username
