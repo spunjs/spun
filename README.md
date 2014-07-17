@@ -1,5 +1,5 @@
 # spun [![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coveralls Status][coveralls-image]][coveralls-url]
-> Rapid specification authoring for Selenium.
+> Rapid Selenium Spec Authoring
 
 `spun` is a command line tool that compiles `spun` files down to selenium code.  The
 output may be anything from `node` to `java` to `ruby`.  The idea is that you can
