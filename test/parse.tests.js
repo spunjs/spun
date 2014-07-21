@@ -25,7 +25,7 @@ describe('parse', function(){
             console.log(err.message);
             console.log(err.stack);
           }
-          done();
+          done(err);
         });
       });
     });
@@ -62,7 +62,7 @@ describe('parse', function(){
            tokens: [
              {type: 'command', value: 'set'},
              {type: 'variable', value: 'foo'},
-             {type: 'string', value: 'asdf'}
+             {type: 'string', value: '"asdf"'}
            ]
          },
          {
@@ -91,10 +91,6 @@ describe('parse', function(){
     ].forEach(function(command){
       it('should replace numeric variables for ' + command, function(done){
         var variables = {};
-       /* var lines = [
-          {command: 'set', args: 'foo 5'},
-          {command: command, args: 'foo'}
-        ];*/
         var lines = [
          {
            tokens: [
@@ -130,10 +126,6 @@ describe('parse', function(){
     ].forEach(function(command){
       it('should not replace numeric variables for ' + command, function(done){
         var variables = {};
- /*       var lines = [
-          {command: 'set', args: 'foo 5'},
-          {command: command, args: 'foo'}
-        ];*/
         var lines = [
           {
             tokens: [
@@ -170,7 +162,7 @@ describe('parse', function(){
             tokens: [
               {type: 'command', value: 'set'},
               {type: 'variable', value: 'foo'},
-              {type: 'string', value: 'asdf'}
+              {type: 'string', value: '"asdf"'}
             ]
           },
           {
@@ -219,7 +211,6 @@ describe('parse', function(){
       var absoluePath = test.absolute;
 
       it('should not allow ' + basename(test.relative, '.spun'), function(done){
-        debugger;
         parse(argv, [absoluePath])(function(err){
           if(!err)return done(new Error('Expected to see an error!'));
           err.should.be.an.instanceOf(errors.ValidationError);

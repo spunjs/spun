@@ -29,7 +29,7 @@
   "devDependencies": {
     "coveralls": "~2.10.0",
     "should": "~4.0.4",
-    "mocha": "git+https://github.com/jsdevel/mocha.git#fa3fa4d023e498673a89729ec086f264783ae199",
+    "mocha": "~1.20.1",
     "istanbul": "~0.2.13",
     "jshint": "~2.5.1",
     "composites": "*",
