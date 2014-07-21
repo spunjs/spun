@@ -25,7 +25,7 @@ describe('parse', function(){
             console.log(err.message);
             console.log(err.stack);
           }
-          done(err);
+          done();
         });
       });
     });
@@ -56,17 +56,31 @@ describe('parse', function(){
     ].forEach(function(command){
       it('should replace string variables for ' + command, function(done){
         var variables = {};
+
         var lines = [
-          {command: 'set', args: 'foo "asdf"'},
-          {command: command, args: 'foo'}
-        ];
+         {
+           tokens: [
+             {type: 'command', value: 'set'},
+             {type: 'variable', value: 'foo'},
+             {type: 'string', value: 'asdf'}
+           ]
+         },
+         {
+           tokens: [
+             {type: 'command', value: command},
+             {type: 'variable', value: 'foo'}
+           ]
+         }       
+       ];
+
         var spec = {variables: variables, lines: lines};
         var specs = [spec];
 
         replaceVariables(specs, function(err, _specs){
           _specs.should.equal(specs);
           variables.foo.should.equal('asdf');
-          lines[1].args.should.equal('"asdf"');
+          lines[1].tokens[1].value.should.equal('asdf');
+          lines[1].tokens[1].type.should.equal('string');
           done();
         });
       });
@@ -77,18 +91,33 @@ describe('parse', function(){
     ].forEach(function(command){
       it('should replace numeric variables for ' + command, function(done){
         var variables = {};
-        var lines = [
+       /* var lines = [
           {command: 'set', args: 'foo 5'},
           {command: command, args: 'foo'}
-        ];
-        var spec = {variables: variables, lines: lines};
+        ];*/
+        var lines = [
+         {
+           tokens: [
+             {type: 'command', value: 'set'},
+             {type: 'variable', value: 'foo'},
+             {type: 'number', value: '5'}
+           ]
+         },
+         {
+           tokens: [
+             {type: 'command', value: command},
+             {type: 'variable', value: 'foo'}
+           ]
+         }       
+       ];
+       var spec = {variables: variables, lines: lines};
         var specs = [spec];
 
         replaceVariables(specs, function(err, _specs){
           should(err).be.null;
           _specs.should.equal(specs);
           variables.foo.should.equal(5);
-          lines[1].args.should.equal(5);
+          lines[1].tokens[1].value.should.equal(5);
           done(err);
         });
       });
@@ -101,10 +130,26 @@ describe('parse', function(){
     ].forEach(function(command){
       it('should not replace numeric variables for ' + command, function(done){
         var variables = {};
-        var lines = [
+ /*       var lines = [
           {command: 'set', args: 'foo 5'},
           {command: command, args: 'foo'}
+        ];*/
+        var lines = [
+          {
+            tokens: [
+              {type: 'command', value: 'set'},
+              {type: 'variable', value: 'foo'},
+              {type: 'number', value: '5'}
+            ]
+          },
+          {
+            tokens: [
+              {type: 'command', value: command},
+              {type: 'variable', value: 'foo'}
+            ]
+          }       
         ];
+
         var spec = {variables: variables, lines: lines};
         var specs = [spec];
 
@@ -121,9 +166,21 @@ describe('parse', function(){
       it('should not replace string variables for ' + command, function(done){
         var variables = {};
         var lines = [
-          {command: 'set', args: 'foo "asdf"'},
-          {command: command, args: 'foo'}
+          {
+            tokens: [
+              {type: 'command', value: 'set'},
+              {type: 'variable', value: 'foo'},
+              {type: 'string', value: 'asdf'}
+            ]
+          },
+          {
+            tokens: [
+              {type: 'command', value: command},
+              {type: 'variable', value: 'foo'}
+            ]
+          }
         ];
+
         var spec = {variables: variables, lines: lines};
         var specs = [spec];
 
@@ -137,7 +194,12 @@ describe('parse', function(){
     it('should return an error when referencing an undefined variable', function(done){
       var variables = {};
       var lines = [
-        {command: 'sleep', args: 'foo'}
+        {
+          tokens: [
+            {type: 'command', value: 'sleep'},
+            {type: 'variable', value: 'foo'}
+          ],
+        }
       ];
       var spec = {variables: variables, lines: lines};
       var specs = [spec];
@@ -157,6 +219,7 @@ describe('parse', function(){
       var absoluePath = test.absolute;
 
       it('should not allow ' + basename(test.relative, '.spun'), function(done){
+        debugger;
         parse(argv, [absoluePath])(function(err){
           if(!err)return done(new Error('Expected to see an error!'));
           err.should.be.an.instanceOf(errors.ValidationError);
