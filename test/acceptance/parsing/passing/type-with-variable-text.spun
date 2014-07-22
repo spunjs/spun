@@ -1,0 +1,3 @@
+get "http://google.com"
+set foo 5
+type foo in "#id"
