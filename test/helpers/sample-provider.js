@@ -1,4 +1,5 @@
 'use strict';
+var assert = require('assert');
 var composites = require('composites');
 var Program = composites.Program;
 var CompositeString = composites.CompositeString;
@@ -23,6 +24,7 @@ module.exports = function(argv){
   };
 
   this.sleep = function(args, line, spec){
+    assert('number', typeof args.amount);
     program.push('sample: ' + args.amount);
   };
 
