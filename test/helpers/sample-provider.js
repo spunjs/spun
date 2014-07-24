@@ -6,12 +6,28 @@ var CompositeString = composites.CompositeString;
 module.exports = function(argv){
   var program = new Program();
 
-  this.get = function(line, previousLines, remainingLines){
-    program.push('sample: ' + line.tokens[1].value);
+  this.click = function(args, line, spec){
+    program.push('sample: "' + args.query + '"');
   };
 
-  this.quit = function(line, previousLines, remainingLines){
+  this.find = function(args, line, spec){
+    program.push('sample: "' + args.query + '"');
+  };
+
+  this.get = function(args, line, spec){
+    program.push('sample: "' + args.url + '"');
+  };
+
+  this.quit = function(args, line, spec){
     program.push('sample: quit');
+  };
+
+  this.sleep = function(args, line, spec){
+    program.push('sample: ' + args.amount);
+  };
+
+  this.submit = function(args, line, spec){
+    program.push('sample: "' + args.query + '"');
   };
 
   this.toString = function(){
