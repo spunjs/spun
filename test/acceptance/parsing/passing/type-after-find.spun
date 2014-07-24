@@ -1,0 +1,6 @@
+get "http://google.com"
+
+find "asdf"
+type "asdf"
+
+quit
