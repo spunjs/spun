@@ -30,6 +30,13 @@ module.exports = function(argv){
     program.push('sample: "' + args.query + '"');
   };
 
+  this.type = function(args, line, spec){
+    if(args.query)
+      program.push('sample: type ' + '"' + args.text  + '" in "' + args.query + '"');
+    else
+      program.push('sample: type ' + '"' + args.text + '"');
+  };
+
   this.toString = function(){
     return program.toString();
   };
