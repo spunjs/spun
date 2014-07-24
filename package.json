@@ -9,6 +9,7 @@
     "cover": "istanbul cover _mocha && cat ./coverage/lcov.info | coveralls -v && rm -rf coverage",
     "test": "make test"
   },
+  "homepage": "http://www.spunjs.com",
   "bin": {
     "spun": "./bin/spun.js"
   },
