@@ -1,7 +1,7 @@
 {
   "name": "spun",
   "version": "0.10.0",
-  "description": "Rapid Selenium Spec Authoring",
+  "description": "Rapid Selenium Testing",
   "author": "Joseph Spencer",
   "preferGlobal": true,
   "scripts": {
@@ -20,7 +20,9 @@
   "keywords": [
     "selenium",
     "spec",
-    "runner"
+    "runner",
+    "testing",
+    "webdriver"
   ],
   "contributors": [],
   "license": "MIT",
