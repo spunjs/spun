@@ -14,6 +14,8 @@ author a language agnostic selenium specification and run it on any platform.
 `spun` will attempt to run the results using `node`.  You an override this behavior
 using [the options](#options).
 
+The default provider is [spun-selenium-webdriver](https://github.com/spunjs/spun-selenium-webdriver)
+
 ## Contents
 * [Why the name?](#whyTheName)
 * [Example spun file](#exampleSpunFile)
