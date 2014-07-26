@@ -1,0 +1,4 @@
+set foo 5
+set coo 5.5
+
+get "http://google.com"
