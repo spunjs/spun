@@ -47,7 +47,7 @@ A goole search for `selenium definition` resulted in this:
   the chemical element of atomic number 34, a gray crystalline nonmetal with semiconducting properties.
 ```
 
-Hmm, a chemical element.  Yeureeka!  `spun` let's you get `spun` out on `selenium`!
+Hmm, a chemical element.  Eureka!  `spun` let's you get `spun` out on `selenium`!
 
 Still not very cool ;)
 
