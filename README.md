@@ -1,24 +1,23 @@
 # spun [![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coveralls Status][coveralls-image]][coveralls-url]
 > Rapid Selenium Testing
 
-`spun` is a command line tool that compiles `spun` files down to selenium code.  The
-output may be anything from `node` to `java` to `ruby`.  The idea is that you can
-author a language agnostic selenium specification and run it on any platform.
+`spun` is a command line tool that compiles `spun` files down to selenium code.
 
-`spun` relies on `strategy providers` to convert a spun file down to a languge.
-`spun` will search `package.json` for the first dependency prefixed with
-`spun-`.  Because a `strategy provider` is likely to include [spun-util](https://github.com/spunjs/spun-util.git),
-`spun-util` is ignored in this search.
+A `spun` file contains a very terse format for authoring Selenium tests.  We've
+authored a DSL (Domain Specific Languge) that we feel handles most use cases.  The
+language of `spun` looks like this:
 
-`spun` also assumes that by default your language compiles down to `node`.  By default
-`spun` will attempt to run the results using `node`.  You an override this behavior
-using [the options](#options).
-
-The default provider is [spun-selenium-webdriver](https://github.com/spunjs/spun-selenium-webdriver)
+```
+get "https://google.com"
+type "query" in "[name=q]"
+click "a"
+quit
+```
 
 ## Contents
 * [Why the name?](#whyTheName)
 * [Example spun file](#exampleSpunFile)
+* [How does it work?](#howDoesItWork)
 * [CLI](#options)
 
 <a name="whyTheName" />
@@ -51,24 +50,27 @@ Hmm, a chemical element.  Eureka!  `spun` let's you get `spun` out on `selenium`
 
 Still not very cool ;)
 
-<a name="exampleSpunFile" />
-## Example spun file
-
-```spun
-get "http://google.com"
-find "[name=username]"
-type "username"
-find "[name=password]"
-type "password"
-click "#login-button"
-get "/news"
-quit
-```
-
 <a name="options"/>
 ## Options
 
 Run `spun -h` for usage.
+
+<a name="howDoesItWork"/>
+## How does it work?
+
+`spun` relies on `strategy providers` to convert a spun file down to a languge.
+The output may be anything from `node` to `java` to `ruby`.
+
+`spun` will search `package.json` for the first dependency prefixed with
+`spun-`.  Because a `strategy provider` is likely to include
+[spun-util](https://github.com/spunjs/spun-util.git), `spun-util` is ignored in
+this search.
+
+`spun` also assumes that by default your language compiles down to `node`.  By default
+`spun` will attempt to run the results using `node`.  You an override this behavior
+using [the options](#options).
+
+The default provider is [spun-selenium-webdriver](https://github.com/spunjs/spun-selenium-webdriver)
 
 ##LICENSE
 ``````
