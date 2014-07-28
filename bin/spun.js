@@ -7,8 +7,11 @@ var argv = require('minimist')(process.argv.slice(2), {
 var f = require('util').format;
 var h = require('../lib/helpers');
 var findupSync = require('findup-sync');
+var fs = require('fs');
+var read = fs.readFileSync;
 var glob = require('glob');
 var isDir = require('is-dir');
+var isFile = require('is-file');
 var path = require('path');
 var basename = path.basename;
 var dirname = path.dirname;
@@ -59,6 +62,23 @@ if('cwd' in argv){
   }
 } else {
   argv.cwd = REAL_CWD;
+}
+
+if(typeof argv.variables === 'string'){
+  argv.variables = resolve(argv.cwd, argv.variables);
+
+  if(!isFile(argv.variables))
+    cli.error('--variables expects a file path.')
+    , exit(1);
+  else {
+    try {
+      argv.variables = JSON.parse(read(argv.variables));
+    } catch(e) {
+      cli.error(f('There was a problem parsing --variables %s', argv.variables));
+      cli.error('Please ensure that the file contains valid json');
+      exit(1);
+    }
+  }
 }
 
 argv.workerCount = parseInt(argv['worker-count']);

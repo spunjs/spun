@@ -47,23 +47,12 @@ describe('parse', function(){
   });
 
   describe('variable replacement', function(){
-    var replaceVariables = require('../lib/parse/replace-variables');
+    it('should allow default variables from argv', function(done){
+      var file = './acceptance/validating/default-variables.spun';
+      var variables = {url: 'http://google.com'};
+      var argv = {variables: variables};
 
-    it('should return an error when referencing an undefined variable', function(done){
-      var variables = {};
-      var lines = [
-        {
-          tokens: [
-            {type: 'command', value: 'sleep'},
-            {type: 'variable', value: 'foo'}
-          ],
-        }
-      ];
-      var spec = {variables: variables, lines: lines};
-      var specs = [spec];
-
-      replaceVariables(specs, function(err, _specs){
-        err.should.be.an.instanceOf(errors.ParseError);
+      parse(argv, [resolve(__dirname, file)])(function(err, specs){
         done();
       });
     });
