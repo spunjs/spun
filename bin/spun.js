@@ -31,7 +31,7 @@ var spunFiles = [];
 var provider;
 var providerPath;
 var spunTasks;
-var allowedBrowsers = 'chrome,ff,ie,opera,phantom,afari'.split(',');
+var allowedBrowsers = 'chrome,ff,ie,opera,phantom,safari'.split(',');
 var reporter = require('../lib/reporters/spec');
 
 process.title = MODULE_NAME;
