@@ -1,6 +1,6 @@
 {
   "name": "spun",
-  "version": "0.10.7",
+  "version": "0.10.8",
   "description": "Rapid Selenium Testing",
   "author": "Joseph Spencer",
   "preferGlobal": true,
