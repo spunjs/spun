@@ -225,7 +225,7 @@ if(argv.runner)spunTasks.push(require('../lib/run')(argv, reporter(argv, cli)));
 
 async.waterfall(spunTasks, function(err, contexts){
   contexts = contexts || [];
-  var failures = contexts.filter(h.byProp('error')).length;
+  var failures = contexts.filter(function(context){return !!context.error;}).length;
   var method = 'praise';
   if(err) {
     if(err instanceof errors.SpunError){
