@@ -4,3 +4,7 @@ get "http://google.com"
 
 submit username
 click username
+
+set some.url "http://google.com"
+
+get some.url

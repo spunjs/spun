@@ -49,7 +49,7 @@ describe('parse', function(){
   describe('variable replacement', function(){
     it('should allow default variables from argv', function(done){
       var file = './acceptance/validating/default-variables.spun';
-      var variables = {url: 'http://google.com'};
+      var variables = {url: 'http://google.com', some:{other:{url: 'http://github.com'}}};
       var argv = {variables: variables};
 
       parse(argv, [resolve(__dirname, file)])(function(err, specs){
