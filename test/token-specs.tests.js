@@ -7,6 +7,9 @@ describe('token-specs', function(){
     var sut = tokenSpecs[5];
     sut.type.should.equal('variable');
     [
+      'asdfASDF',
+      'baseUrl',
+      'a2345__',
       'asdf.asdf.asdf',
       'asdfasdfasdf',
       'some.url'
